@@ -1,0 +1,5 @@
+rules:
+  # CI checks out the repository for its fixtures anyway, and GitHub does not
+  # document the $/ form for an action at the repository root.
+  self-repository:
+    disable: true
