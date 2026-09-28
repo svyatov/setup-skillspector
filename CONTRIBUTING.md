@@ -1,10 +1,17 @@
 # Contributing
 
-Open an issue before a large change, so we can agree on the approach first.
+Open an issue before a large change, so we can agree on the approach first. Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+
+## Pull requests
+
+1. Fork the repository and create a branch named `type/short-description`, for example `fix/windows-path`.
+2. Make the change. A change that adds functionality arrives with a test: a fixture under `tests/fixtures/` and a step in the `test` job of `.github/workflows/ci.yml` that proves it.
+3. Changes to `action.yml`, `scan.sh`, or a workflow follow GitHub's [secure use reference](https://docs.github.com/en/actions/reference/security/secure-use). CI enforces it with zizmor, actionlint, and shellcheck.
+4. Open a pull request against `main` and fill in the template. It merges by squash once CI passes and the maintainer approves.
 
 ## Checks
 
-CI runs these on every pull request. Run them locally before you push:
+You need [uv](https://docs.astral.sh/uv/), shellcheck, and Docker. CI runs these on every pull request. Run them locally before you push:
 
 ```bash
 shellcheck scan.sh
@@ -37,6 +44,12 @@ Release immutability is enabled, so a published release and its tag never change
 
 1. Move the `[Unreleased]` entries in `CHANGELOG.md` under the new version and merge that to `main`.
 2. Publish a GitHub release named and tagged `vX.Y.Z` from `main`.
-3. Move the major tag, which has no release of its own: `git tag -f v1 vX.Y.Z && git push -f origin v1`.
+3. Move the major tag, which has no release of its own: `git tag -f -a -m v1 v1 vX.Y.Z && git push -f origin v1`.
 
 Commits and pull request titles follow [Conventional Commits](https://www.conventionalcommits.org/).
+
+## Governance
+
+One maintainer, Leonid Svyatov, decides what goes into the action and publishes every release. Decisions happen in the open, in issues and pull requests. Only the maintainer has write access, so every contribution arrives as a pull request from a fork.
+
+No succession is arranged. If the maintainer stops, nobody else holds write access, and no organization owns the repository. The MIT license lets anyone fork the action and carry on.
