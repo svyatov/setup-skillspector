@@ -1,5 +1,7 @@
 # setup-skillspector
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14995/badge)](https://www.bestpractices.dev/projects/14995)
+
 A GitHub Action that installs [NVIDIA SkillSpector](https://github.com/NVIDIA/skillspector) and scans the agent skills in your repository on every push and pull request.
 
 - **One skill or many.** Point it at a skill, or at a directory of skills. Each skill is scanned on its own, so your baseline file still applies.
