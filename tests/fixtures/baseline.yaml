@@ -1,0 +1,21 @@
+version: 2
+
+# Suppresses every finding in fail/risky, so CI can prove the baseline input
+# reaches skillspector: the same skill fails without it and passes with it.
+
+rules:
+  - id: "SC2"
+    path: "SKILL.md"
+    reason: Test fixture.
+  - id: "TM2"
+    path: "SKILL.md"
+    reason: Test fixture.
+  - id: "PE3"
+    path: "SKILL.md"
+    reason: Test fixture.
+  - id: "P1"
+    path: "SKILL.md"
+    reason: Test fixture.
+  - id: "E1"
+    path: "SKILL.md"
+    reason: Test fixture.

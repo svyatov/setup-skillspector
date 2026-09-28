@@ -1,0 +1,78 @@
+name: Setup SkillSpector
+description: Install NVIDIA SkillSpector from a hash-locked lockfile and scan every agent skill in a directory.
+author: Leonid Svyatov
+
+branding:
+  icon: shield
+  color: green
+
+inputs:
+  path:
+    description: A skill directory (holds SKILL.md), or a directory whose immediate subdirectories are skills. Each skill is scanned on its own.
+    default: skills
+  baseline:
+    description: Baseline file of suppressed findings. The default is used only when it exists; any other value must exist. Rule paths are relative to each skill directory.
+    default: .skillspector-baseline.yaml
+  llm:
+    description: Run LLM analysis. Needs provider credentials set as env on this step. When false, passes --no-llm.
+    default: "false"
+  fail-on-findings:
+    description: Fail when any active finding remains, not only when the risk score is above 50.
+    default: "false"
+  fail-on-incomplete:
+    description: Fail when any analysis is partial or incomplete.
+    default: "false"
+  scan:
+    description: Scan after installing. Set to false to only put skillspector on PATH.
+    default: "true"
+
+outputs:
+  version:
+    description: The installed SkillSpector version, for example 2.12.0.
+    value: ${{ steps.install.outputs.version }}
+  report-dir:
+    description: Directory holding one Markdown report per scanned skill.
+    value: ${{ steps.scan.outputs.report-dir }}
+
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      with:
+        version: 0.12.19
+        enable-cache: false
+
+    - id: install
+      shell: bash
+      env:
+        # --no-config keeps the caller's uv.toml or pyproject.toml from
+        # changing the index; --require-hashes and --no-build pin every
+        # wheel and stop any source build from running code.
+        LOCKFILE: ${{ github.action_path }}/requirements.txt
+        INPUT_SCAN: ${{ inputs.scan }}
+      # GITHUB_PATH gets a fixed directory under RUNNER_TEMP, never input.
+      run: | # zizmor: ignore[github-env]
+        if [[ "$INPUT_SCAN" != true && "$INPUT_SCAN" != false ]]; then
+          echo "::error title=setup-skillspector::Input scan must be true or false"
+          exit 2
+        fi
+        venv="$RUNNER_TEMP/skillspector"
+        uv venv --no-config --quiet --clear --python 3.13 "$venv"
+        uv pip install --no-config --quiet --require-hashes --no-build --python "$venv" -r "$LOCKFILE"
+        if [[ "$RUNNER_OS" == Windows ]]; then bin="$venv/Scripts"; else bin="$venv/bin"; fi
+        echo "$bin" >> "$GITHUB_PATH"
+        version=$("$bin/skillspector" --version)
+        echo "version=${version##* v}" >> "$GITHUB_OUTPUT"
+
+    - id: scan
+      if: inputs.scan == 'true'
+      shell: bash
+      env:
+        SCAN_SCRIPT: ${{ github.action_path }}/scan.sh
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_LLM: ${{ inputs.llm }}
+        INPUT_FAIL_ON_FINDINGS: ${{ inputs.fail-on-findings }}
+        INPUT_FAIL_ON_INCOMPLETE: ${{ inputs.fail-on-incomplete }}
+        PYTHONUTF8: "1"
+      run: bash "$SCAN_SCRIPT"
