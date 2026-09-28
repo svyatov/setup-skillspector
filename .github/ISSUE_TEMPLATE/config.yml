@@ -3,6 +3,3 @@ contact_links:
   - name: Report a wrong or missed finding
     url: https://github.com/NVIDIA/skillspector/issues
     about: Findings come from SkillSpector itself, so its maintainers fix them.
-  - name: Report a security vulnerability
-    url: https://github.com/svyatov/setup-skillspector/security/policy
-    about: Follow SECURITY.md. Do not open a public issue.
