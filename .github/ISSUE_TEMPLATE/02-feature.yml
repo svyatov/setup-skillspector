@@ -1,0 +1,24 @@
+name: Feature request
+description: Ask for an input, an output, or a behavior the action does not have.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you need
+      description: What the action should do, and in which workflow.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: The workaround you use now, or why there is none.
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: Proposed input or output
+      description: Optional. The `with:` block you would like to write.
+      render: yaml

@@ -1,0 +1,51 @@
+name: Bug report
+description: The action failed to install, crashed, or did something other than what the README says.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A finding you think is wrong, or a missed one, comes from SkillSpector itself. Report it in the [SkillSpector tracker](https://github.com/NVIDIA/skillspector/issues) instead.
+  - type: input
+    id: ref
+    attributes:
+      label: Action version
+      description: The `uses:` line from your workflow. The ref decides which SkillSpector version ran.
+      placeholder: svyatov/setup-skillspector@451614c57972f6053b0bd07f73503aeaf9addbe5 # v1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: runner
+    attributes:
+      label: Runner
+      description: CI tests the action on the three GitHub-hosted runners below.
+      options:
+        - ubuntu (GitHub-hosted)
+        - macos (GitHub-hosted)
+        - windows (GitHub-hosted)
+        - Self-hosted or other
+    validations:
+      required: true
+  - type: textarea
+    id: step
+    attributes:
+      label: Workflow step
+      description: The step that uses the action, with its `with:` and `env:` blocks. Replace secret values.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Job log
+      description: The log of that step. Expand the collapsed groups before copying.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: Quote the README or `action.yml` line that says so, if one does.
+    validations:
+      required: true
